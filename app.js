@@ -1,8 +1,12 @@
 // Pour importer express
 const express = require('express');
+// Import de body-parser après installation du package comme dépendance
+const bodyParser = require('body-parser');
 
 // pour appeler la méthode express
 const app = express();
+
+
 
 // on rajoute des headers à l'objet réponse
 app.use((req, res, next) => {
@@ -12,6 +16,20 @@ app.use((req, res, next) => {
     next();
 });
 
+// route POST
+// On définit la fonction json de bodyParser comme middleware global pour votre application, juste après avoir défini les headers de la réponse :
+app.use(bodyParser.json());
+
+app.post('/api/stuff', (req, res, next) => {
+    console.log(req.body);
+    res.status(201).json({
+        message: 'Objet créé !'
+    });
+});
+
+
+// route GET
+// L'argument passé à la méthode use : un string, correspondant à la route pour laquelle nous souhaitons enregistrer cet élément de middleware
 app.use('/api/stuff', (req, res, next) => {
     const stuff = [{
             _id: 'oeihfzeoi',
