@@ -2,12 +2,16 @@
 const express = require('express');
 // Import de body-parser après installation du package comme dépendance
 const bodyParser = require('body-parser');
-
-// pour appeler la méthode express
-const app = express();
-
 // Pour connecter l'API au cluster MongoDB
 const mongoose = require('mongoose');
+// pour appeler la méthode express
+const app = express();
+// toutes la logique de route a été passée à notre routeur stuff qu'il faut importer
+const stuffRoutes = require('./routes/stuff');
+// infrastructure nécessaire à nos routes d'authentification
+const userRoutes = require('./routes/user');
+
+
 // adresse SRV et données utilisateur
 mongoose.connect('mongodb+srv://julie:ifwcu2g2@cluster0-cucgb.mongodb.net/test?retryWrites=true&w=majority', {
         useNewUrlParser: true,
@@ -15,9 +19,6 @@ mongoose.connect('mongodb+srv://julie:ifwcu2g2@cluster0-cucgb.mongodb.net/test?r
     })
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
-
-// pour pouvoir utilise le nouveau modèle Mongoose dans l'application
-const Thing = require('./models/Thing');
 
 
 // on rajoute des headers à l'objet réponse
@@ -28,15 +29,13 @@ app.use((req, res, next) => {
     next();
 });
 
-// toutes la logique de route a été passée à notre routeur stuff qu'il faut importer
-const stuffRoutes = require('./routes/stuff');
+//const router = express.Router();
+// pour pouvoir utilise les modèles Mongoose dans l'application
+const Thing = require('./models/Thing');
+//const User = require('./models/User');
 
-// Nous l'enregistrerons ensuite comme nous le ferions pour une route unique. 
-// Nous voulons enregistrer notre routeur pour toutes les demandes effectuées vers /api/stuff
-app.use('/api/stuff', stuffRoutes);
 
-// infrastructure nécessaire à nos routes d'authentification
-const userRoutes = require('./routes/user');
+app.use(bodyParser.json());
 app.use('/api/stuff', stuffRoutes);
 app.use('/api/auth', userRoutes);
 
