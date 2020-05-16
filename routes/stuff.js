@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
+// nous importons notre middleware et le passons comme argument aux routes à protéger :
+const auth = require('../middleware/auth');
+
 const stuffCtrl = require('../controllers/stuff');
 
 router.get('/', stuffCtrl.getAllStuff);
