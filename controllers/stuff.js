@@ -39,7 +39,7 @@ exports.getOneThing = (req, res, next) => {
     );
 };
 
-exports.modifyThing = (req, res, next) => {
+/* exports.modifyThing = (req, res, next) => {
     const thing = new Thing({
         _id: req.params.id,
         title: req.body.title,
@@ -47,20 +47,37 @@ exports.modifyThing = (req, res, next) => {
         imageUrl: req.body.imageUrl,
         price: req.body.price,
         userId: req.body.userId
-    });
-    Thing.updateOne({ _id: req.params.id }, thing).then(
-        () => {
-            res.status(201).json({
-                message: 'Thing updated successfully!'
-            });
-        }
-    ).catch(
-        (error) => {
-            res.status(400).json({
-                error: error
-            });
-        }
-    );
+    });*/
+
+
+// Dans cette version modifiée de la fonction, 
+// on crée un objet thingObject qui regarde si req.file existe ou non. 
+exports.modifyThing = (req, res, next) => {
+    const thingObject = req.file ? {
+        ...JSON.parse(req.body.thing),
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    } : {...req.body };
+    Thing.updateOne({ _id: req.params.id }, {...thingObject, _id: req.params.id })
+        .then(() => res.status(200).json({ message: 'Objet modifié !' }))
+        .catch(error => res.status(400).json({ error }));
+};
+
+
+
+
+Thing.updateOne({ _id: req.params.id }, thing).then(
+    () => {
+        res.status(201).json({
+            message: 'Thing updated successfully!'
+        });
+    }
+).catch(
+    (error) => {
+        res.status(400).json({
+            error: error
+        });
+    }
+);
 };
 
 exports.deleteThing = (req, res, next) => {
