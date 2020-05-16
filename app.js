@@ -17,7 +17,7 @@ mongoose.connect('mongodb+srv://julie:ifwcu2g2@cluster0-cucgb.mongodb.net/test?r
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 // pour pouvoir utilise le nouveau modèle Mongoose dans l'application
-const Thing = require('./models/thing');
+const Thing = require('./models/Thing');
 
 
 // on rajoute des headers à l'objet réponse
@@ -32,9 +32,13 @@ app.use((req, res, next) => {
 const stuffRoutes = require('./routes/stuff');
 
 // Nous l'enregistrerons ensuite comme nous le ferions pour une route unique. 
-// Nous voulons enregistrer notre routeur pour toutes les demandes effectuées vers /api/stuff . Par conséquent, tapez :
-
+// Nous voulons enregistrer notre routeur pour toutes les demandes effectuées vers /api/stuff
 app.use('/api/stuff', stuffRoutes);
+
+// infrastructure nécessaire à nos routes d'authentification
+const userRoutes = require('./routes/user');
+app.use('/api/stuff', stuffRoutes);
+app.use('/api/auth', userRoutes);
 
 
 
